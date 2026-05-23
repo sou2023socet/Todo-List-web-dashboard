@@ -1,10 +1,1 @@
-import { Status } from './status.enum';
-import { Priority } from './priority.enum';
-
-export interface TodoRequest {
-  topic: string;
-  summaryPoints: string;
-  status: Status;
-  priority: Priority;
-  section: string;
-}
+export type { TodoRequest } from '../api-payload/todo-request.interface';

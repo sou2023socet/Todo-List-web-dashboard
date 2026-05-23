@@ -1,5 +1,1 @@
-export interface AuthResponse {
-  username: string;
-  tenantId: string;
-  token?: string;
-}
+export type { AuthResponse } from '../api-payload/auth-response.interface';

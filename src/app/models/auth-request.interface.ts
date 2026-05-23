@@ -1,6 +1,1 @@
-export interface AuthRequest {
-  username: string;
-  password: string;
-  tenantId: string;
-  emailAddress?: string;
-}
+export type { AuthRequest } from '../api-payload/auth-request.interface';

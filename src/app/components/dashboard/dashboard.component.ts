@@ -186,7 +186,7 @@ export class DashboardComponent implements OnInit {
 
   loadSections(): void {
     this.todoService.getSections().subscribe(sections => {
-      this.sections = sections;
+      // this.sections = sections;
     });
   }
 

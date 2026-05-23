@@ -1,21 +1,39 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
-import { Router } from '@angular/router';
+
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  AbstractControl
+} from '@angular/forms';
+
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
 import { AuthService } from '../../../services/auth.service';
-import { AuthRequest } from '../../../models/auth-request.interface';
 
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+
   templateUrl: './registration.html',
   styleUrl: './registration.css',
 })
 
 export class Registration {
+
   registerForm: FormGroup;
+
   loading = false;
+  submitted = false;
+
   error: string | null = null;
 
   constructor(
@@ -23,46 +41,122 @@ export class Registration {
     private authService: AuthService,
     private router: Router
   ) {
+
     this.registerForm = this.fb.group({
-      tenantId: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(128), this.passwordValidator]],
-      confirmPassword: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
+
+      tenantId: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3)
+        ]
+      ],
+
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3)
+        ]
+      ],
+
+      emailId: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
+
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          this.passwordValidator
+        ]
+      ],
+
+      confirmPassword: [
+        '',
+        Validators.required
+      ]
+
+    }, {
+      validators: this.passwordMatchValidator
+    });
   }
 
-  passwordValidator(control: AbstractControl): { [key: string]: any } | null {
+  passwordValidator(
+    control: AbstractControl
+  ): { [key: string]: boolean } | null {
+
     const value = control.value;
+
     if (!value) return null;
+
     const hasUpperCase = /[A-Z]/.test(value);
     const hasLowerCase = /[a-z]/.test(value);
     const hasDigit = /\d/.test(value);
-    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
-    const valid = hasUpperCase && hasLowerCase && hasDigit && hasSpecial;
-    return !valid ? { invalidPassword: true } : null;
+    const hasSpecial = /[!@#$%^&*]/.test(value);
+
+    const valid =
+      hasUpperCase &&
+      hasLowerCase &&
+      hasDigit &&
+      hasSpecial;
+
+    return valid ? null : {
+      invalidPassword: true
+    };
   }
 
-  passwordMatchValidator(group: AbstractControl): { [key: string]: any } | null {
-    const password = group.get('password');
-    const confirmPassword = group.get('confirmPassword');
-    return password && confirmPassword && password.value !== confirmPassword.value ? { passwordMismatch: true } : null;
+  passwordMatchValidator(
+    form: AbstractControl
+  ): { [key: string]: boolean } | null {
+
+    const password =
+      form.get('password')?.value;
+
+    const confirmPassword =
+      form.get('confirmPassword')?.value;
+
+    return password === confirmPassword
+      ? null
+      : { passwordMismatch: true };
   }
 
   onSubmit(): void {
-    if (this.registerForm.valid) {
-      this.loading = true;
-      this.error = null;
-      const { confirmPassword, ...authRequest } = this.registerForm.value;
-      this.authService.register(authRequest).subscribe({
+
+    this.submitted = true;
+
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
+    const { confirmPassword, ...payload } =
+      this.registerForm.value;
+
+    this.authService.register(payload)
+      .subscribe({
+
         next: () => {
+
           this.loading = false;
+
           this.router.navigate(['/login']);
         },
+
         error: (err) => {
+
           this.loading = false;
-          this.error = err.error?.message || 'Registration failed';
+
+          this.error =
+            err.error?.message ||
+            'Registration failed';
         }
       });
-    }
   }
 }

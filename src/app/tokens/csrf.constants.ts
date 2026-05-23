@@ -1,0 +1,4 @@
+export const CSRF_CONSTANTS = {
+  COOKIE_NAME: 'XSRF-TOKEN',
+  HEADER_NAME: 'X-XSRF-TOKEN'
+};

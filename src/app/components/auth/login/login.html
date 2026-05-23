@@ -1,41 +1,159 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full space-y-8">
-        <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+<div class="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100 flex items-center justify-center px-4">
+
+    <div
+        class="w-full max-w-md bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 animate-fade-in">
+
+        <!-- Logo -->
+        <div class="flex justify-center">
+            <div
+                class="h-20 w-20 rounded-full bg-indigo-600 flex items-center justify-center text-white text-3xl shadow-lg animate-bounce-slow">
+                🔐
+            </div>
         </div>
-        <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    <label for="tenantId" class="sr-only">Tenant ID</label>
-                    <input id="tenantId" name="tenantId" type="text" formControlName="tenantId" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Tenant ID">
-                </div>
-                <div>
-                    <label for="username" class="sr-only">Username</label>
-                    <input id="username" name="username" type="text" formControlName="username" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Username">
-                </div>
-                <div>
-                    <label for="password" class="sr-only">Password</label>
-                    <input id="password" name="password" type="password" formControlName="password" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Password">
-                </div>
-            </div>
+
+        <!-- Heading -->
+        <div class="mt-6 text-center">
+            <h2 class="text-4xl font-extrabold text-gray-800">
+                Welcome Back
+            </h2>
+
+            <p class="mt-2 text-gray-500 text-sm">
+                Sign in to continue to your account
+            </p>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="error"
+            class="mt-4 bg-red-100 border border-red-300 text-red-600 px-4 py-3 rounded-xl text-sm animate-pulse">
+            {{ error }}
+        </div>
+
+        <!-- Form -->
+        <form
+            class="mt-8 space-y-5"
+            [formGroup]="loginForm"
+            (ngSubmit)="onSubmit()">
+
+            <!-- Tenant -->
             <div>
-                <button type="submit" [disabled]="loginForm.invalid || loading"
-                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
-                    <span *ngIf="loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                    Sign in
-                </button>
+                <label class="text-sm font-semibold text-gray-700">
+                    Tenant ID
+                </label>
+
+                <input
+                    type="text"
+                    formControlName="tenantId"
+                    placeholder="Enter Tenant ID"
+                    class="mt-1 w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300" />
+
+                <div
+                    *ngIf="submitted && loginForm.get('tenantId')?.invalid"
+                    class="text-red-500 text-sm mt-1">
+                    Tenant ID is required
+                </div>
             </div>
-            <div class="text-center">
-                <a routerLink="/register" class="font-medium text-indigo-600 hover:text-indigo-500">Register New
-                    Account</a>
+
+            <!-- Username -->
+            <div>
+                <label class="text-sm font-semibold text-gray-700">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    formControlName="username"
+                    placeholder="Enter Username"
+                    class="mt-1 w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300" />
+
+                <div
+                    *ngIf="submitted && loginForm.get('username')?.invalid"
+                    class="text-red-500 text-sm mt-1">
+                    Username is required
+                </div>
             </div>
-            <div *ngIf="error" class="text-red-500 text-center">{{ error }}</div>
+
+            <!-- Password -->
+            <div>
+                <label class="text-sm font-semibold text-gray-700">
+                    Password
+                </label>
+
+                <div class="relative">
+
+                    <input
+                        [type]="showPassword ? 'text' : 'password'"
+                        formControlName="password"
+                        placeholder="Enter Password"
+                        class="mt-1 w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300" />
+
+                    <button
+                        type="button"
+                        (click)="togglePassword()"
+                        class="absolute right-4 top-4 text-gray-500 hover:text-indigo-600">
+
+                        {{ showPassword ? '🙈' : '👁️' }}
+                    </button>
+                </div>
+
+                <div
+                    *ngIf="submitted && loginForm.get('password')?.invalid"
+                    class="text-red-500 text-sm mt-1">
+                    Password is required
+                </div>
+            </div>
+
+            <!-- Forgot Password -->
+            <div class="flex justify-end">
+                <a
+                    routerLink="/forgot-password"
+                    class="text-sm text-indigo-600 hover:text-indigo-800 transition">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <!-- Button -->
+            <button
+                type="submit"
+                [disabled]="loading"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60">
+
+                <svg
+                    *ngIf="loading"
+                    class="animate-spin h-5 w-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24">
+
+                    <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4">
+                    </circle>
+
+                    <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z">
+                    </path>
+                </svg>
+
+                {{ loading ? 'Signing In...' : 'Sign In' }}
+            </button>
+
+            <!-- Register -->
+            <div class="text-center text-sm text-gray-600">
+                Don’t have an account?
+
+                <a
+                    routerLink="/register"
+                    class="text-indigo-600 font-semibold hover:text-indigo-800 ml-1">
+                    Register
+                </a>
+            </div>
+
         </form>
     </div>
 </div>

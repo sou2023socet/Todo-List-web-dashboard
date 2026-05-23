@@ -1,0 +1,10 @@
+:root {
+  --color-status-pending: #f59e0b;
+  --color-status-in-progress: #3b82f6;
+  --color-status-completed: #10b981;
+  --color-priority-low: #34d399;
+  --color-priority-medium: #f97316;
+  --color-priority-high: #ef4444;
+
+  --font-family-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
